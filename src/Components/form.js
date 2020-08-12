@@ -86,6 +86,24 @@ const Form = () => {
           emailError: false,
           validEmail: true,
         }));
+        axios.post(`https://api.raisely.com/v3/check-user`, {'campaignUuid':state.campaignUuid,data:{'email':email}}
+        ).then(res => {
+          console.log(res,res.status)
+          switch(res.data.status){
+            case 'EXISTS':
+              setState(prevState => ({
+                ...prevState,
+                email_exists_error: true,
+              }))
+            case 'OK':
+              setState(prevState => ({
+                ...prevState,
+                email_exists_error: false,
+              }))
+            default:
+              return null
+          }
+        })
         break;
       case false:
         setState((prevState) => ({
@@ -142,7 +160,7 @@ const Form = () => {
     const validEmail = email_regEx.test(document.querySelector('#email').value);
     const validPassword = document.querySelector('#password').value.length >= 5;
 
-    if (validFirstName && validLastName && validEmail && validPassword) {
+    if (validFirstName && validLastName && validEmail && validPassword && !state.email_exists_error) {
       setState((prevState) => ({
         ...prevState,
         isComplete: true,
@@ -214,6 +232,16 @@ const Form = () => {
         return null;
     }
   };
+  const email_exists_error = () => {
+    switch (state.email_exists_error) {
+      case true:
+        return <p className="error">Please input another email address</p>;
+      case false:
+        return null;
+      default:
+        return null;
+    }
+  }
   return (
     <div id="maindiv">
       <div className="row">
@@ -230,6 +258,7 @@ const Form = () => {
             <p className="headers">Email</p>
             <input id="email" className={state.emailError ? 'input_error' : 'input'} onChange={updateEmail} type="text" />
             {emailError()}
+            {email_exists_error()}
             <p className="headers">Password</p>
             <input id="password" className={state.passwordError ? 'input_error' : 'input'} onChange={updatePassword} type="password" />
             {passwordError()}

@@ -17,6 +17,7 @@ const GlobalContextProvider = ({ children }) => {
     firstNameError: false,
     lastNameError: false,
     formSubmitted: false,
+    email_exists_error: false,
     campaignUuid: '46aa3270-d2ee-11ea-a9f0-e9a68ccff42a',
   });
   return (
