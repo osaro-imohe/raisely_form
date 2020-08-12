@@ -86,7 +86,6 @@ const Form = () => {
           emailError: false,
           validEmail: true,
         }));
-        console.log({'campaignUuid':state.campaignUuid,data:{'email':email}})
         axios.post(`https://api.raisely.com/v3/check-user`, {'campaignUuid':state.campaignUuid,data:{'email':email}}
         ).then(res => {
           switch(res.data.data.status){
@@ -103,7 +102,7 @@ const Form = () => {
               }))
               break
             default:
-              return null
+              break
           }
         })
         break;
@@ -162,7 +161,7 @@ const Form = () => {
     const validEmail = email_regEx.test(document.querySelector('#email').value);
     const validPassword = document.querySelector('#password').value.length >= 5;
 
-    if (validFirstName && validLastName && validEmail && validPassword && !state.email_exists_error) {
+    if (validFirstName && validLastName && validEmail && validPassword && !state.email_exists_error ) {
       setState((prevState) => ({
         ...prevState,
         isComplete: true,
@@ -215,7 +214,7 @@ const Form = () => {
     }
   };
   const disableButton = () => {
-    switch (state.isComplete) {
+    switch (state.isComplete && !state.email_exists_error) {
       case true:
         return <button id="submit_button" type="submit" onClick={handleSubmit}>Submit</button>;
       case false:
