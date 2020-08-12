@@ -86,20 +86,22 @@ const Form = () => {
           emailError: false,
           validEmail: true,
         }));
+        console.log({'campaignUuid':state.campaignUuid,data:{'email':email}})
         axios.post(`https://api.raisely.com/v3/check-user`, {'campaignUuid':state.campaignUuid,data:{'email':email}}
         ).then(res => {
-          console.log(res,res.status)
-          switch(res.data.status){
-            case 'EXISTS':
-              setState(prevState => ({
-                ...prevState,
-                email_exists_error: true,
-              }))
+          switch(res.data.data.status){
             case 'OK':
               setState(prevState => ({
                 ...prevState,
                 email_exists_error: false,
               }))
+              break
+            case 'EXISTS':
+              setState(prevState => ({
+                ...prevState,
+                email_exists_error: true,
+              }))
+              break
             default:
               return null
           }
